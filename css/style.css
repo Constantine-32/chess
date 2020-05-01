@@ -18,19 +18,33 @@ header {
 main {
   display: flex;
   justify-content: space-between;
-  width: 1440px;
+  width: 1460px;
+  height: 720px;
   margin: 0 auto;
 }
 
 aside {
   width: 350px;
-  height: 700px;
+  height: 100%;
+  background-color: #2e2a24;
 }
 
 .board {
-  width: 700px;
-  height: 700px;
+  position: relative;
+  width: 720px;
+  height: 720px;
   background-image: url("../svg/board.svg");
+  cursor: pointer;
+}
+
+piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  background-size: cover;
+  z-index: 2;
 }
 
 .pawn.white {
