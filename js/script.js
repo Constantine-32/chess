@@ -234,28 +234,49 @@ function Game(board) {
 }
 
 // Global variables
-// const game = new Game([
-//   ['r','n','b','q','k','b','n','r'],
-//   ['p','p','p','p','p','p','p','p'],
-//   ['.','.','.','.','.','.','.','.'],
-//   ['.','.','.','.','.','.','.','.'],
-//   ['.','.','.','.','.','.','.','.'],
-//   ['.','.','.','.','.','.','.','.'],
-//   ['P','P','P','P','P','P','P','P'],
-//   ['R','N','B','Q','K','B','N','R']
-// ])
-
 const game = new Game([
   ['r','n','b','q','k','b','n','r'],
   ['p','p','p','p','p','p','p','p'],
-  ['.','.','.','.','.','P','.','.'],
-  ['.','.','.','N','.','.','p','.'],
-  ['.','p','.','.','.','.','.','.'],
-  ['.','.','.','.','P','.','.','.'],
+  ['.','.','.','.','.','.','.','.'],
+  ['.','.','.','.','.','.','.','.'],
+  ['.','.','.','.','.','.','.','.'],
+  ['.','.','.','.','.','.','.','.'],
   ['P','P','P','P','P','P','P','P'],
   ['R','N','B','Q','K','B','N','R']
 ])
 
-game.select({y: 3, x: 3})
+// Functions
+function fillBoard() {
+  const board = document.querySelector('.board')
+  const size = 90
+  for (let y = 0; y < 8; y++) {
+    for (let x = 0; x < 8; x++) {
+      const data = game.get({x: x, y: y})
+      if (data === '.') continue
+      const piece = document.createElement('piece')
+      piece.classList.add(getClassColor(data))
+      piece.classList.add(getClassPiece(data))
+      translate(piece, x * size, y * size)
+      board.appendChild(piece)
+    }
+  }
+}
 
-console.log(game.selmoves)
+function getClassColor(data) {
+  return 'A' <= data && data <= 'Z' ? 'white' : 'black'
+}
+
+function getClassPiece(data) {
+  data = data.toLowerCase()
+  return {p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king'}[data]
+}
+
+function translate(e, x, y) {
+  e.style.transform = 'translate('+x+'px, '+y+'px)'
+}
+
+// Event Listeners
+
+
+// Code
+fillBoard()
