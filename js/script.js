@@ -177,7 +177,7 @@ function Game(board) {
   this.getQueenMoves = function() {
     const moves1 = this.getRookMoves()
     const moves2 = this.getBishopMoves()
-    return moves1.concat(moves2)
+    return moves1 ? moves1.concat(moves2 ? moves2 : []) : undefined
   }
 
   this.getKingMoves = function() {
@@ -245,9 +245,13 @@ const game = new Game([
   ['R','N','B','Q','K','B','N','R']
 ])
 
+const board = document.querySelector('.board')
+
+let draggedPiece = undefined
+let draggedPieceCoords = undefined
+
 // Functions
 function fillBoard() {
-  const board = document.querySelector('.board')
   const size = 90
   for (let y = 0; y < 8; y++) {
     for (let x = 0; x < 8; x++) {
@@ -256,7 +260,7 @@ function fillBoard() {
       const piece = document.createElement('piece')
       piece.classList.add(getClassColor(data))
       piece.classList.add(getClassPiece(data))
-      translate(piece, x * size, y * size)
+      translate(piece, {x: x * size, y: y * size})
       board.appendChild(piece)
     }
   }
@@ -271,12 +275,56 @@ function getClassPiece(data) {
   return {p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king'}[data]
 }
 
-function translate(e, x, y) {
-  e.style.transform = 'translate('+x+'px, '+y+'px)'
+function translate(piece, coord) {
+  piece.style.transform = 'translate('+coord.x+'px, '+coord.y+'px)'
+}
+
+function getRelativeCoords(e) {
+  return {x: e.clientX - board.offsetLeft, y: e.clientY - board.offsetTop}
+}
+
+function getFlooredCoords(e) {
+  const co = this.getRelativeCoords(e)
+  return {x: co.x - co.x % 90, y: co.y - co.y % 90}
+}
+
+function getBoardCoords(e) {
+  const co = getRelativeCoords(e)
+  return {x: Math.floor(co.x / 90), y: Math.floor(co.y / 90)}
+}
+
+function dragStart(e) {
+  const co = getBoardCoords(e)
+  if (!game.select(co)) return
+  draggedPiece = e.target
+  draggedPiece.style.zIndex = '4'
+  draggedPieceCoords = getFlooredCoords(e)
+  const c = getRelativeCoords(e)
+  translate(draggedPiece, {x: c.x - 45, y: c.y - 45})
+}
+
+function drag(e) {
+  if (!draggedPiece) return
+  e.preventDefault()
+  const c = getRelativeCoords(e)
+  translate(draggedPiece, {x: c.x - 45, y: c.y - 45})
+}
+
+function dragEnd(e) {
+  if (!draggedPiece) return
+  const co = getBoardCoords(e)
+  if (!game.move(co)) translate(draggedPiece, draggedPieceCoords)
+  else translate(draggedPiece, getFlooredCoords(e))
+  draggedPiece.style.zIndex = '2'
+
+  draggedPiece = undefined
+  draggedPieceCoords = undefined
 }
 
 // Event Listeners
-
+board.addEventListener('mousedown', dragStart)
+board.addEventListener('mousemove', drag)
+board.addEventListener('mouseup', dragEnd)
 
 // Code
 fillBoard()
