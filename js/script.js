@@ -10,6 +10,7 @@ function Game(board) {
   // stores the coords of the avaliable moves of the selected piece
   this.selmoves = undefined
 
+  // selects a piece if its an ally piece with valid moves
   this.select = function(coord) {
     if (!this.isAllyPiece(coord)) return false
     this.selected = coord
@@ -21,6 +22,7 @@ function Game(board) {
     return true
   }
 
+  // returns array of valid moves for selected piece
   this.getSelmoves = function() {
     switch (this.get(this.selected)) {
       case 'P': return this.getPawnMoves()
@@ -31,6 +33,27 @@ function Game(board) {
       case 'K': return this.getKingMoves()
       default: return undefined
     }
+  }
+
+  // moves selected piece to argument coords
+  this.move = function (coord) {
+    if (!this.selected) return false
+    if (!this.inSelmoves(coord)) return false
+
+    let movingPiece = this.get(this.selected)
+    console.log('moving ' + movingPiece + ' from ', this.selected, ' to ',  coord)
+
+    if (this.isEnemyPiece(coord)) {
+      console.log('captured: ' + this.get(coord))
+    }
+
+    this.remove(this.selected)
+    this.place(movingPiece, coord)
+
+    this.selected = undefined
+    this.selmoves = undefined
+
+    return true
   }
 
   this.getPawnMoves = function() {
@@ -170,8 +193,25 @@ function Game(board) {
     return 0 <= coord.x && coord.x < 8 && 0 <= coord.y && coord.y < 8
   }
 
+  // check if argument coords is in selmoves array
+  this.inSelmoves = function(coord) {
+    for (let i = 0; i < this.selmoves.length; i++) {
+      let c = this.selmoves[i]
+      if (coord.x === c.x && coord.y === c.y) return true
+    }
+    return false
+  }
+
   this.get = function(coord) {
     return this.board[coord.y][coord.x]
+  }
+
+  this.remove = function(coord) {
+    this.board[coord.y][coord.x] = '.'
+  }
+
+  this.place = function(piece, coord) {
+    this.board[coord.y][coord.x] = piece
   }
 }
 
@@ -191,7 +231,7 @@ const game = new Game([
   ['r','n','b','q','k','b','n','r'],
   ['p','p','p','p','p','p','p','p'],
   ['.','.','.','.','.','P','.','.'],
-  ['.','.','.','Q','.','.','p','.'],
+  ['.','.','.','N','.','.','p','.'],
   ['.','p','.','.','.','.','.','.'],
   ['.','.','.','.','P','.','.','.'],
   ['P','P','P','P','P','P','P','P'],
