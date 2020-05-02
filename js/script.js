@@ -61,6 +61,8 @@ function Game(board) {
     const moves = []
     let front = {x: o.x, y: o.y-1}
     if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
+    let front2 = {x: o.x, y: o.y-2}
+    if (o.y === 6 && this.isValid(front2) && !this.isPiece(front2)) moves.push(front2)
     let frontl = {x: o.x-1, y: o.y-1}
     if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
     let frontr = {x: o.x+1, y: o.y-1}
@@ -79,6 +81,8 @@ function Game(board) {
       i++
       move = {x: o.x, y: o.y - i}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     // South
     i = 1
     move = {x: o.x, y: o.y + i}
@@ -87,6 +91,8 @@ function Game(board) {
       i++
       move = {x: o.x, y: o.y + i}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     // West
     i = 1
     move = {x: o.x - i, y: o.y}
@@ -95,6 +101,8 @@ function Game(board) {
       i++
       move = {x: o.x - i, y: o.y}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     // Est
     i = 1
     move = {x: o.x + i, y: o.y}
@@ -103,6 +111,8 @@ function Game(board) {
       i++
       move = {x: o.x + i, y: o.y}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     return moves.length > 0 ? moves : undefined
   }
 
@@ -129,6 +139,8 @@ function Game(board) {
       i++
       move = {x: o.x + i, y: o.y - i}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     // South East
     i = 1
     move = {x: o.x + i, y: o.y + i}
@@ -137,6 +149,8 @@ function Game(board) {
       i++
       move = {x: o.x + i, y: o.y + i}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     // North West
     i = 1
     move = {x: o.x - i, y: o.y - i}
@@ -145,6 +159,8 @@ function Game(board) {
       i++
       move = {x: o.x - i, y: o.y - i}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     // South West
     i = 1
     move = {x: o.x - i, y: o.y + i}
@@ -153,6 +169,8 @@ function Game(board) {
       i++
       move = {x: o.x - i, y: o.y + i}
     }
+    if (this.isValid(move) && this.isEnemyPiece(move))
+      moves.push(move)
     return moves.length > 0 ? moves : undefined
   }
 
