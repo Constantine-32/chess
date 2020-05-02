@@ -39,11 +39,14 @@ function Game(board) {
 
   // selects a piece if its an ally piece with valid moves
   this.select = function(coord) {
+    console.log('start select')
     if (!this.isAllyPiece(coord)) return false
+    console.log('continue select')
     this.selected = coord
     this.selmoves = this.getSelmoves()
     if (!this.selmoves) {
       this.selected = undefined
+      console.log('no selected moves')
       return false
     }
     return true
@@ -52,12 +55,12 @@ function Game(board) {
   // returns array of valid moves for selected piece
   this.getSelmoves = function() {
     switch (this.get(this.selected)) {
-      case 'P': return this.getPawnMoves()
-      case 'R': return this.getRookMoves()
-      case 'N': return this.getKnightMoves()
-      case 'B': return this.getBishopMoves()
-      case 'Q': return this.getQueenMoves()
-      case 'K': return this.getKingMoves()
+      case 'P': case 'p': return this.getPawnMoves()
+      case 'R': case 'r': return this.getRookMoves()
+      case 'N': case 'n': return this.getKnightMoves()
+      case 'B': case 'b': return this.getBishopMoves()
+      case 'Q': case 'q': return this.getQueenMoves()
+      case 'K': case 'k': return this.getKingMoves()
       default: return undefined
     }
   }
@@ -94,15 +97,27 @@ function Game(board) {
   this.getPawnMoves = function() {
     const o = this.selected
     const moves = []
-    let front = {x: o.x, y: o.y-1}
-    if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
-    let front2 = {x: o.x, y: o.y-2}
-    if (o.y === 6 && this.isValid(front2) && !this.isPiece(front2)) moves.push(front2)
-    let frontl = {x: o.x-1, y: o.y-1}
-    if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
-    let frontr = {x: o.x+1, y: o.y-1}
-    if (this.isValid(frontr) && this.isEnemyPiece(frontr)) moves.push(frontr)
-    return moves.length > 0 ? moves : undefined
+    if (this.pturn === 'white') {
+      let front = {x: o.x, y: o.y-1}
+      if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
+      let front2 = {x: o.x, y: o.y-2}
+      if (o.y === 6 && this.isValid(front2) && !this.isPiece(front2)) moves.push(front2)
+      let frontl = {x: o.x-1, y: o.y-1}
+      if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
+      let frontr = {x: o.x+1, y: o.y-1}
+      if (this.isValid(frontr) && this.isEnemyPiece(frontr)) moves.push(frontr)
+      return moves.length > 0 ? moves : undefined
+    } else {
+      let front = {x: o.x, y: o.y+1}
+      if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
+      let front2 = {x: o.x, y: o.y+2}
+      if (o.y === 1 && this.isValid(front2) && !this.isPiece(front2)) moves.push(front2)
+      let frontl = {x: o.x-1, y: o.y+1}
+      if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
+      let frontr = {x: o.x+1, y: o.y+1}
+      if (this.isValid(frontr) && this.isEnemyPiece(frontr)) moves.push(frontr)
+      return moves.length > 0 ? moves : undefined
+    }
   }
 
   this.getRookMoves = function() {
@@ -239,11 +254,11 @@ function Game(board) {
   }
 
   this.isAllyPiece = function(coord) {
-    return this.white.includes(this.get(coord))
+    return (this.pturn === 'white') ? this.white.includes(this.get(coord)) : this.black.includes(this.get(coord))
   }
 
   this.isEnemyPiece = function(coord) {
-    return this.black.includes(this.get(coord))
+    return (this.pturn === 'white') ? this.black.includes(this.get(coord)) : this.white.includes(this.get(coord))
   }
 
   // returns if a coord is within the board limits
