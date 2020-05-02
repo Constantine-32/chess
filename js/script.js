@@ -8,8 +8,9 @@ if (!String.prototype.includes) {
 
 // Clasess
 function Game(board) {
-  this.color = 'w'
+  this.pturn = 'white'
   this.board = board
+  this.htmlb = new Array(8)
   this.white = 'KQBBNNRRPPPPPPPP'
   this.black = 'kqbbnnrrpppppppp'
 
@@ -17,6 +18,24 @@ function Game(board) {
   this.selected = undefined
   // stores the coords of the avaliable moves of the selected piece
   this.selmoves = undefined
+
+  this.fillBoard = function() {
+    const htmlboard = document.querySelector('.board')
+    const size = 90
+    for (let y = 0; y < 8; y++) {
+      this.htmlb[y] = new Array(8)
+      for (let x = 0; x < 8; x++) {
+        const data = this.get({x: x, y: y})
+        if (data === '.') continue
+        const piece = document.createElement('piece')
+        piece.classList.add(getClassColor(data))
+        piece.classList.add(getClassPiece(data))
+        translate(piece, {x: x * size, y: y * size})
+        htmlboard.appendChild(piece)
+        this.htmlb[y][x] = piece
+      }
+    }
+  }
 
   // selects a piece if its an ally piece with valid moves
   this.select = function(coord) {
@@ -51,17 +70,25 @@ function Game(board) {
     let movingPiece = this.get(this.selected)
     console.log('moving ' + movingPiece + ' from ', this.selected, ' to ',  coord)
 
-    if (this.isEnemyPiece(coord)) {
-      console.log('captured: ' + this.get(coord))
-    }
+    if (this.isEnemyPiece(coord)) this.capture(coord)
 
-    this.remove(this.selected)
-    this.place(movingPiece, coord)
+    this.place(this.remove(this.selected), coord)
+
+    this.switchPlayer()
 
     this.selected = undefined
     this.selmoves = undefined
 
     return true
+  }
+
+  this.capture = function(coord) {
+    const piece = this.htmlb[coord.y][coord.x]
+    document.querySelector('.board').removeChild(piece)
+  }
+
+  this.switchPlayer = function() {
+    this.pturn = this.pturn === 'white' ? 'black' : 'white'
   }
 
   this.getPawnMoves = function() {
@@ -184,9 +211,12 @@ function Game(board) {
   }
 
   this.getQueenMoves = function() {
-    const moves1 = this.getRookMoves()
-    const moves2 = this.getBishopMoves()
-    return moves1 ? moves1.concat(moves2 ? moves2 : []) : undefined
+    let moves1 = this.getRookMoves()
+    let moves2 = this.getBishopMoves()
+    moves1 = moves1 ? moves1 : []
+    moves2 = moves2 ? moves2 : []
+    const moves = moves1.concat(moves2)
+    return moves.length > 0 ? moves : undefined
   }
 
   this.getKingMoves = function() {
@@ -237,12 +267,17 @@ function Game(board) {
 
   // removes the piece from the given coords
   this.remove = function(coord) {
+    const piece = this.board[coord.y][coord.x]
+    const htmlp = this.htmlb[coord.y][coord.x]
     this.board[coord.y][coord.x] = '.'
+    this.htmlb[coord.y][coord.x] = undefined
+    return [piece, htmlp]
   }
 
   // places the given piece to the given coords in the board
   this.place = function(piece, coord) {
-    this.board[coord.y][coord.x] = piece
+    this.board[coord.y][coord.x] = piece[0]
+    this.htmlb[coord.y][coord.x] = piece[1]
   }
 }
 
@@ -257,28 +292,12 @@ const game = new Game([
   ['P','P','P','P','P','P','P','P'],
   ['R','N','B','Q','K','B','N','R']
 ])
-
 const board = document.querySelector('.board')
 
 let draggedPiece = undefined
 let draggedPieceCoords = undefined
 
 // Functions
-function fillBoard() {
-  const size = 90
-  for (let y = 0; y < 8; y++) {
-    for (let x = 0; x < 8; x++) {
-      const data = game.get({x: x, y: y})
-      if (data === '.') continue
-      const piece = document.createElement('piece')
-      piece.classList.add(getClassColor(data))
-      piece.classList.add(getClassPiece(data))
-      translate(piece, {x: x * size, y: y * size})
-      board.appendChild(piece)
-    }
-  }
-}
-
 function getClassColor(data) {
   return 'A' <= data && data <= 'Z' ? 'white' : 'black'
 }
@@ -339,4 +358,4 @@ board.addEventListener('mousemove', drag)
 board.addEventListener('mouseup', dragEnd)
 
 // Code
-fillBoard()
+game.fillBoard()
