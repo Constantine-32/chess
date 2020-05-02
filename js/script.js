@@ -216,6 +216,7 @@ function Game(board) {
     return this.black.includes(this.get(coord))
   }
 
+  // returns if a coord is within the board limits
   this.isValid = function(coord) {
     return 0 <= coord.x && coord.x < 8 && 0 <= coord.y && coord.y < 8
   }
@@ -229,14 +230,17 @@ function Game(board) {
     return false
   }
 
+  // returns the piece character of the given coords
   this.get = function(coord) {
     return this.board[coord.y][coord.x]
   }
 
+  // removes the piece from the given coords
   this.remove = function(coord) {
     this.board[coord.y][coord.x] = '.'
   }
 
+  // places the given piece to the given coords in the board
   this.place = function(piece, coord) {
     this.board[coord.y][coord.x] = piece
   }
@@ -303,8 +307,7 @@ function getBoardCoords(e) {
 }
 
 function dragStart(e) {
-  const co = getBoardCoords(e)
-  if (!game.select(co)) return
+  if (!game.select(getBoardCoords(e))) return
   draggedPiece = e.target
   draggedPiece.style.zIndex = '4'
   draggedPieceCoords = getFlooredCoords(e)
@@ -322,8 +325,8 @@ function drag(e) {
 function dragEnd(e) {
   if (!draggedPiece) return
   const co = getBoardCoords(e)
-  if (!game.move(co)) translate(draggedPiece, draggedPieceCoords)
-  else translate(draggedPiece, getFlooredCoords(e))
+  if (game.move(co)) translate(draggedPiece, getFlooredCoords(e))
+  else translate(draggedPiece, draggedPieceCoords)
   draggedPiece.style.zIndex = '2'
 
   draggedPiece = undefined
