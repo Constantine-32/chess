@@ -1,3 +1,11 @@
+// Fixes for IE11
+if (!String.prototype.includes) {
+  String.prototype.includes = function() {
+    'use strict'
+    return String.prototype.indexOf.apply(this, arguments) !== -1
+  }
+}
+
 // Clasess
 function Game(board) {
   this.color = 'w'
@@ -120,8 +128,9 @@ function Game(board) {
     const o = this.selected
     const moves = []
     const offss = [[1, 2], [2, 1], [1, -2], [2, -1], [-1, 2], [-2, 1], [-1, -2], [-2, -1]]
-    let move
-    for (const offs of offss) {
+    let move, offs
+    for (let i = 0; i < offss.length; i++) {
+      offs = offss[i]
       move = {x: o.x + offs[0], y: o.y + offs[1]}
       if (this.isValid(move) && !this.isAllyPiece(move)) moves.push(move)
     }
