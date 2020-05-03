@@ -8,7 +8,8 @@ if (!String.prototype.includes) {
 
 // Clasess
 function Game(board) {
-  this.pturn = 'white'
+  this.pturn = true
+  this.cturn = 'white'
   this.board = board
   this.htmlb = new Array(8)
   this.white = 'KQBBNNRRPPPPPPPP'
@@ -39,14 +40,11 @@ function Game(board) {
 
   // selects a piece if its an ally piece with valid moves
   this.select = function(coord) {
-    console.log('start select')
-    if (!this.isAllyPiece(coord)) return false
-    console.log('continue select')
+    if (!this.pturn || !this.isAllyPiece(coord)) return false
     this.selected = coord
     this.selmoves = this.getSelmoves()
     if (!this.selmoves) {
       this.selected = undefined
-      console.log('no selected moves')
       return false
     }
     return true
@@ -66,12 +64,8 @@ function Game(board) {
   }
 
   // moves selected piece to argument coords
-  this.move = function (coord) {
-    if (!this.selected) return false
-    if (!this.inSelmoves(coord)) return false
-
-    let movingPiece = this.get(this.selected)
-    console.log('moving ' + movingPiece + ' from ', this.selected, ' to ',  coord)
+  this.move = function(coord) {
+    if (!this.pturn || !this.selected || !this.inSelmoves(coord)) return false
 
     if (this.isEnemyPiece(coord)) this.capture(coord)
 
@@ -85,19 +79,52 @@ function Game(board) {
     return true
   }
 
+  this.moveAI = function () {
+    if (this.pturn) return false
+    // select a random piece that can move
+    const pieces = []
+    let temp
+    for (let y = 0; y < 8; y++) {
+      for (let x = 0; x < 8; x++) {
+        temp = {x: x, y: y}
+        if (this.isAllyPiece(temp)) {
+          this.selected = temp
+          if (this.getSelmoves()) pieces.push(this.selected)
+        }
+      }
+    }
+    if (pieces.length === 0) console.log('AI: no avaliable moves!')
+    this.selected = pieces[this.randomInt(pieces.length)]
+    // select a random move of the selected piece
+    this.selmoves = this.getSelmoves()
+    const move = this.selmoves[this.randomInt(this.selmoves.length)]
+
+    if (this.isEnemyPiece(move)) this.capture(move)
+
+    const htmlp = this.gethtml(this.selected)
+    this.place(this.remove(this.selected), move)
+    htmlp.style.transform = 'translate('+move.x*90+'px, '+move.y*90+'px)'
+
+    this.switchPlayer()
+
+    this.selected = undefined
+    this.selmoves = undefined
+  }
+
   this.capture = function(coord) {
     const piece = this.htmlb[coord.y][coord.x]
     document.querySelector('.board').removeChild(piece)
   }
 
   this.switchPlayer = function() {
-    this.pturn = this.pturn === 'white' ? 'black' : 'white'
+    this.cturn = this.cturn === 'white' ? 'black' : 'white'
+    this.pturn = !this.pturn
   }
 
   this.getPawnMoves = function() {
     const o = this.selected
     const moves = []
-    if (this.pturn === 'white') {
+    if (this.cturn === 'white') {
       let front = {x: o.x, y: o.y-1}
       if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
       let front2 = {x: o.x, y: o.y-2}
@@ -254,11 +281,11 @@ function Game(board) {
   }
 
   this.isAllyPiece = function(coord) {
-    return (this.pturn === 'white') ? this.white.includes(this.get(coord)) : this.black.includes(this.get(coord))
+    return (this.cturn === 'white') ? this.white.includes(this.get(coord)) : this.black.includes(this.get(coord))
   }
 
   this.isEnemyPiece = function(coord) {
-    return (this.pturn === 'white') ? this.black.includes(this.get(coord)) : this.white.includes(this.get(coord))
+    return (this.cturn === 'white') ? this.black.includes(this.get(coord)) : this.white.includes(this.get(coord))
   }
 
   // returns if a coord is within the board limits
@@ -280,6 +307,10 @@ function Game(board) {
     return this.board[coord.y][coord.x]
   }
 
+  this.gethtml = function (coord) {
+    return this.htmlb[coord.y][coord.x]
+  }
+
   // removes the piece from the given coords
   this.remove = function(coord) {
     const piece = this.board[coord.y][coord.x]
@@ -293,6 +324,10 @@ function Game(board) {
   this.place = function(piece, coord) {
     this.board[coord.y][coord.x] = piece[0]
     this.htmlb[coord.y][coord.x] = piece[1]
+  }
+
+  this.randomInt = function(n) {
+    return Math.floor(Math.random() * n)
   }
 }
 
@@ -365,6 +400,8 @@ function dragEnd(e) {
 
   draggedPiece = undefined
   draggedPieceCoords = undefined
+
+  game.moveAI()
 }
 
 // Event Listeners
