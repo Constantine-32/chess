@@ -91,23 +91,39 @@ function Game(board) {
 
   this.moveAI = function () {
     if (this.pturn) return false
-    // select a random piece that can move
+    // select a random piece that can move giving priority to the ones that can capture
     const pieces = []
-    let temp
+    const capturepices = []
     for (let y = 0; y < 8; y++) {
       for (let x = 0; x < 8; x++) {
-        temp = {x: x, y: y}
-        if (this.isAllyPiece(temp)) {
-          this.selected = temp
-          if (this.getSelmoves()) pieces.push(this.selected)
+        this.selected = {x: x, y: y}
+        if (this.isAllyPiece(this.selected)) {
+          if (this.getSelmoves()) {
+            pieces.push(this.selected)
+            if (this.anyCapture(this.getSelmoves())) {
+              capturepices.push(this.selected)
+            }
+          }
         }
       }
     }
-    if (pieces.length === 0) console.log('AI: no avaliable moves!')
-    this.selected = pieces[this.randomInt(pieces.length)]
+
+    if (pieces.length === 0) {
+      console.log('AI: no avaliable moves!')
+      return false
+    }
+
+    this.selected = this.randomItem(capturepices.length ? capturepices : pieces)
+
     // select a random move of the selected piece
     this.selmoves = this.getSelmoves()
-    const move = this.selmoves[this.randomInt(this.selmoves.length)]
+
+    const capturemoves = []
+    for (let i = 0; i < this.selmoves.length; i++) {
+      if (this.isEnemyPiece(this.selmoves[i]))
+        capturemoves.push(this.selmoves[i])
+    }
+    const move = this.randomItem(capturemoves.length ? capturemoves : this.selmoves)
 
     if (this.isEnemyPiece(move)) this.capture(move)
 
@@ -342,6 +358,16 @@ function Game(board) {
     return Math.floor(Math.random() * n)
   }
 
+  this.randomItem = function(array) {
+    return array[this.randomInt(array.length)]
+  }
+
+  this.anyCapture = function(moves) {
+    for (let i = 0; i < moves.length; i++)
+      if (this.isEnemyPiece(moves[i])) return true
+    return false
+  }
+
   this.coordNotation = function (coord) {
     const piece = this.get(coord).toLowerCase()
     return {p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔'}[piece] + 'abcdefgh'[coord.x] + (coord.y+1)
@@ -423,7 +449,7 @@ function mouseup(e) {
   if (move) setTimeout(function () {
     addMove(game.moveAI())
     document.title = 'Your turn'
-  }, 1000)
+  }, 0)
 }
 
 function addMove(move) {
