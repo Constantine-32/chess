@@ -89,7 +89,7 @@ function Game(board) {
     return this.coordNotation(coord)
   }
 
-  this.moveAI = function () {
+  this.moveAI = function() {
     if (this.pturn) return false
     // select a random piece that can move giving priority to the ones that can capture
     const pieces = []
@@ -156,7 +156,7 @@ function Game(board) {
       let front = {x: o.x, y: o.y-1}
       if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
       let front2 = {x: o.x, y: o.y-2}
-      if (o.y === 6 && this.isValid(front2) && !this.isPiece(front2)) moves.push(front2)
+      if (o.y === 6 && this.isValid(front2) && !this.isPiece(front) && !this.isPiece(front2)) moves.push(front2)
       let frontl = {x: o.x-1, y: o.y-1}
       if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
       let frontr = {x: o.x+1, y: o.y-1}
@@ -166,7 +166,7 @@ function Game(board) {
       let front = {x: o.x, y: o.y+1}
       if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
       let front2 = {x: o.x, y: o.y+2}
-      if (o.y === 1 && this.isValid(front2) && !this.isPiece(front2)) moves.push(front2)
+      if (o.y === 1 && this.isValid(front2) && !this.isPiece(front) && !this.isPiece(front2)) moves.push(front2)
       let frontl = {x: o.x-1, y: o.y+1}
       if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
       let frontr = {x: o.x+1, y: o.y+1}
