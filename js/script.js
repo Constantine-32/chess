@@ -52,13 +52,14 @@ function Game(board) {
 
   // returns array of valid moves for selected piece
   this.getSelmoves = function() {
-    switch (this.get(this.selected)) {
-      case 'P': case 'p': return this.getPawnMoves()
-      case 'R': case 'r': return this.getRookMoves()
-      case 'N': case 'n': return this.getKnightMoves()
-      case 'B': case 'b': return this.getBishopMoves()
-      case 'Q': case 'q': return this.getQueenMoves()
-      case 'K': case 'k': return this.getKingMoves()
+    const piece = this.get(this.selected).toLowerCase()
+    switch (piece) {
+      case 'p': return this.getPawnMoves()
+      case 'r': return this.getRookMoves()
+      case 'n': return this.getKnightMoves()
+      case 'b': return this.getBishopMoves()
+      case 'q': return this.getQueenMoves()
+      case 'k': return this.getKingMoves()
       default: return undefined
     }
   }
@@ -76,7 +77,7 @@ function Game(board) {
     this.selected = undefined
     this.selmoves = undefined
 
-    return true
+    return this.coordNotation(coord)
   }
 
   this.moveAI = function () {
@@ -109,6 +110,8 @@ function Game(board) {
 
     this.selected = undefined
     this.selmoves = undefined
+
+    return this.coordNotation(move)
   }
 
   this.capture = function(coord) {
@@ -328,6 +331,11 @@ function Game(board) {
 
   this.randomInt = function(n) {
     return Math.floor(Math.random() * n)
+  }
+
+  this.coordNotation = function (coord) {
+    const piece = this.get(coord).toLowerCase()
+    return {p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔'}[piece] + 'abcdefgh'[coord.x] + (coord.y+1)
   }
 }
 
