@@ -355,6 +355,8 @@ const board = document.querySelector('.board')
 let draggedPiece = undefined
 let draggedPieceCoords = undefined
 
+let moves = 1
+
 // Functions
 function getClassColor(data) {
   return 'A' <= data && data <= 'Z' ? 'white' : 'black'
@@ -402,14 +404,33 @@ function drag(e) {
 function dragEnd(e) {
   if (!draggedPiece) return
   const co = getBoardCoords(e)
-  if (game.move(co)) translate(draggedPiece, getFlooredCoords(e))
+  const move = game.move(co)
+  if (move) {
+    translate(draggedPiece, getFlooredCoords(e))
+    addMove(move)
+  }
   else translate(draggedPiece, draggedPieceCoords)
   draggedPiece.style.zIndex = '2'
 
   draggedPiece = undefined
   draggedPieceCoords = undefined
 
-  game.moveAI()
+  if (move) addMove(game.moveAI())
+}
+
+function addMove(move) {
+  const container = document.querySelector('.moves')
+  if (moves % 1 === 0) {
+    const index = document.createElement('div')
+    index.classList.add('index')
+    index.textContent = moves.toString()
+    container.appendChild(index)
+  }
+  const movediv = document.createElement('div')
+  movediv.classList.add('move')
+  movediv.textContent = move
+  container.appendChild(movediv)
+  moves += .5
 }
 
 // Event Listeners
