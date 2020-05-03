@@ -408,6 +408,7 @@ function dragEnd(e) {
   if (move) {
     translate(draggedPiece, getFlooredCoords(e))
     addMove(move)
+    document.title = 'Waiting for opponent'
   }
   else translate(draggedPiece, draggedPieceCoords)
   draggedPiece.style.zIndex = '2'
@@ -415,7 +416,10 @@ function dragEnd(e) {
   draggedPiece = undefined
   draggedPieceCoords = undefined
 
-  if (move) addMove(game.moveAI())
+  if (move) setTimeout(function () {
+    addMove(game.moveAI())
+    document.title = 'Your turn'
+  }, 1000)
 }
 
 function addMove(move) {
