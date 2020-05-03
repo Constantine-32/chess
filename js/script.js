@@ -29,13 +29,22 @@ function Game(board) {
         const data = this.get({x: x, y: y})
         if (data === '.') continue
         const piece = document.createElement('piece')
-        piece.classList.add(getClassColor(data))
-        piece.classList.add(getClassPiece(data))
+        piece.classList.add(this.getClassColor(data))
+        piece.classList.add(this.getClassPiece(data))
         translate(piece, {x: x * size, y: y * size})
         htmlboard.appendChild(piece)
         this.htmlb[y][x] = piece
       }
     }
+  }
+
+  this.getClassColor = function(data) {
+    return 'A' <= data && data <= 'Z' ? 'white' : 'black'
+  }
+
+  this.getClassPiece = function(data) {
+    data = data.toLowerCase()
+    return {p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king'}[data]
   }
 
   // selects a piece if its an ally piece with valid moves
@@ -358,15 +367,6 @@ let draggedPieceCoords = undefined
 let moves = 1
 
 // Functions
-function getClassColor(data) {
-  return 'A' <= data && data <= 'Z' ? 'white' : 'black'
-}
-
-function getClassPiece(data) {
-  data = data.toLowerCase()
-  return {p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king'}[data]
-}
-
 function translate(piece, coord) {
   piece.style.transform = 'translate('+coord.x+'px, '+coord.y+'px)'
 }
@@ -385,7 +385,11 @@ function getBoardCoords(e) {
   return {x: Math.floor(co.x / 90), y: Math.floor(co.y / 90)}
 }
 
-function dragStart(e) {
+function getBoardToPixel(coord) {
+  return {x: coord.x * 90, y: coord.y * 90}
+}
+
+function mousedown(e) {
   if (!game.select(getBoardCoords(e))) return
   draggedPiece = e.target
   draggedPiece.style.zIndex = '4'
@@ -394,14 +398,14 @@ function dragStart(e) {
   translate(draggedPiece, {x: c.x - 45, y: c.y - 45})
 }
 
-function drag(e) {
+function mousemove(e) {
   if (!draggedPiece) return
   e.preventDefault()
   const c = getRelativeCoords(e)
   translate(draggedPiece, {x: c.x - 45, y: c.y - 45})
 }
 
-function dragEnd(e) {
+function mouseup(e) {
   if (!draggedPiece) return
   const co = getBoardCoords(e)
   const move = game.move(co)
@@ -438,9 +442,9 @@ function addMove(move) {
 }
 
 // Event Listeners
-board.addEventListener('mousedown', dragStart)
-board.addEventListener('mousemove', drag)
-board.addEventListener('mouseup', dragEnd)
+board.addEventListener('mousedown', mousedown)
+board.addEventListener('mousemove', mousemove)
+board.addEventListener('mouseup', mouseup)
 
 // Code
 game.fillBoard()
