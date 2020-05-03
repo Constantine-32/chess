@@ -5,6 +5,7 @@
 
 body {
   background-color: #161512;
+  user-select: none;
 }
 
 header {
@@ -29,7 +30,7 @@ main {
 
 aside {
   width: 350px;
-  height: 40%;
+  height: 324px;
   background-color: #262421;
 }
 
@@ -51,6 +52,26 @@ piece {
   z-index: 2;
 }
 
+.selected {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  z-index: 1;
+  background-color: rgba(20, 85, 30, 0.5);
+}
+
+.movedots {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12.5%;
+  height: 12.5%;
+  z-index: 1;
+  background: radial-gradient(rgba(20, 85, 30, 0.5) 19%, rgba(0, 0, 0, 0) 20%);
+}
+
 .buttons {
   height: 32px;
   background: #302e2c;
@@ -64,6 +85,7 @@ piece {
   flex-wrap: wrap;
   align-items: center;
   line-height: 26px;
+  overflow: auto;
 }
 .moves .index {
   width: 16%;
