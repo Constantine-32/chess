@@ -459,6 +459,7 @@ function addMove(move) {
     index.classList.add('index')
     index.textContent = moves.toString()
     container.appendChild(index)
+    container.scrollTop = container.scrollHeight
   }
   const movediv = document.createElement('div')
   movediv.classList.add('move')
