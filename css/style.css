@@ -50,6 +50,10 @@ piece {
   z-index: 2;
 }
 
+.black {
+  transition: transform 0.2s;
+}
+
 .pawn.white {
   background-image: url("../svg/pawn.white.svg");
 }
