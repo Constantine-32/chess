@@ -115,7 +115,8 @@ header {
   visibility: hidden;
 }
 
-.game-history .buttons {
+#game-history div {
+  padding-top: 50px;
   text-align: center;
 }
 

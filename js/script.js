@@ -141,6 +141,7 @@ function Game(side) {
     return this.coordNotation(coord)
   }
 
+  // the AI makes a move
   this.moveAI = function() {
     if (this.pturn) return false
     // select a random piece that can move giving priority to the ones that can capture
@@ -181,6 +182,7 @@ function Game(side) {
 
     const htmlp = this.gethtml(this.selected)
     this.place(this.remove(this.selected), move)
+    // visually move the html piece
     htmlp.style.transition = 'transform .3s'
     htmlp.style.transform = 'translate('+move.x*90+'px, '+move.y*90+'px)'
 
@@ -409,8 +411,9 @@ function Game(side) {
   this.place = function(piece, coord) {
     this.board[coord.y][coord.x] = piece[0]
     this.htmlb[coord.y][coord.x] = piece[1]
+    // code for auto pawn coronation into queen
     if (piece[0].toLowerCase() === 'p' && (coord.y === 0 || coord.y === 7)) {
-      const code = this.getClassColor(piece[0]) === 'white' ? 'Q' : 'q'
+      const code = this.cturn === 'white' ? 'Q' : 'q'
       this.board[coord.y][coord.x] = code
       this.paren.removeChild(this.htmlb[coord.y][coord.x])
       const queen = document.createElement('piece')
@@ -418,20 +421,26 @@ function Game(side) {
       queen.classList.add(this.getClassPiece(code))
       translate(queen, {x: coord.x * 90, y: coord.y * 90})
       this.paren.appendChild(queen)
-      this.htmlb[coord.y][coord.x] = queen
+      this.htmlb[coord.y][coord.x] = queen;
+      this.cturn === 'white' ? this.white.push(code) : this.black.push(code)
+      const index = (this.cturn === 'white' ? this.black : this.white).indexOf(piece[0])
+      if (index > -1) (this.cturn === 'white' ? this.black : this.white).splice(index, 1)
     }
   }
 
+  // returns a random item from the given array
   this.randomItem = function(array) {
     return array[this.randomInt(array.length)]
   }
 
+  // returns if any of the moves of the given array is a move that captures an enemy piece
   this.anyCapture = function(moves) {
     for (let i = 0; i < moves.length; i++)
       if (this.isEnemyPiece(moves[i])) return true
     return false
   }
 
+  // returns the notation of the move from the given coords
   this.coordNotation = function (coord) {
     const piece = this.get(coord).toLowerCase()
     return {p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔'}[piece] + 'abcdefgh'[coord.x] + (coord.y+1)
@@ -542,6 +551,9 @@ function menuSubmit(e) {
 
   name = inputName.value
   if (!(2 < name.length && name.length < 20)) return false
+  // Get the age of the user in years
+  const age = Math.floor((new Date() - new Date(inputDate.value)) / 31536000000)
+  name += ' (age ' + age + ' years)'
 
   const side = document.activeElement.id.split('-')[1]
   game = new Game(side)
