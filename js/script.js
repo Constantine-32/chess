@@ -421,10 +421,14 @@ function Game(side) {
       queen.classList.add(this.getClassPiece(code))
       translate(queen, {x: coord.x * 90, y: coord.y * 90})
       this.paren.appendChild(queen)
-      this.htmlb[coord.y][coord.x] = queen;
-      this.cturn === 'white' ? this.white.push(code) : this.black.push(code)
-      const index = (this.cturn === 'white' ? this.black : this.white).indexOf(piece[0])
-      if (index > -1) (this.cturn === 'white' ? this.black : this.white).splice(index, 1)
+      this.htmlb[coord.y][coord.x] = queen
+      if (this.cturn === 'white') {
+        this.white.splice(this.white.indexOf(piece[0]), 1)
+        this.white.push(code)
+      } else {
+        this.black.splice(this.black.indexOf(piece[0]), 1)
+        this.black.push(code)
+      }
     }
   }
 
