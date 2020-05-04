@@ -378,6 +378,28 @@ function Game(board) {
   this.place = function(piece, coord) {
     this.board[coord.y][coord.x] = piece[0]
     this.htmlb[coord.y][coord.x] = piece[1]
+    if (piece[0].toLowerCase() === 'p') {
+      if (this.getClassColor(piece[0]) === 'white' && coord.y === 0) {
+        this.board[coord.y][coord.x] = 'Q'
+        this.paren.removeChild(this.htmlb[coord.y][coord.x])
+        const queen = document.createElement('piece')
+        queen.classList.add(this.getClassColor(piece[0]))
+        queen.classList.add(this.getClassPiece('Q'))
+        translate(queen, {x: coord.x * 90, y: coord.y * 90})
+        this.paren.appendChild(queen)
+        this.htmlb[coord.y][coord.x] = queen
+      }
+      if (this.getClassColor(piece[0]) === 'black' && coord.y === 7) {
+        this.board[coord.y][coord.x] = 'q'
+        this.paren.removeChild(this.htmlb[coord.y][coord.x])
+        const queen = document.createElement('piece')
+        queen.classList.add(this.getClassColor(piece[0]))
+        queen.classList.add(this.getClassPiece('q'))
+        translate(queen, {x: coord.x * 90, y: coord.y * 90})
+        this.paren.appendChild(queen)
+        this.htmlb[coord.y][coord.x] = queen
+      }
+    }
   }
 
   this.randomInt = function(n) {
@@ -407,15 +429,25 @@ function Game(board) {
 
 // Global variables
 const game = new Game([
-  ['r','n','b','q','k','b','n','r'],
-  ['p','p','p','p','p','p','p','p'],
-  ['.','.','.','.','.','.','.','.'],
-  ['.','.','.','.','.','.','.','.'],
   ['.','.','.','.','.','.','.','.'],
   ['.','.','.','.','.','.','.','.'],
   ['P','P','P','P','P','P','P','P'],
-  ['R','N','B','Q','K','B','N','R']
+  ['.','.','.','.','.','.','.','.'],
+  ['.','.','.','.','.','.','.','.'],
+  ['p','p','p','p','p','p','p','p'],
+  ['.','.','.','.','.','.','.','.'],
+  ['.','.','.','.','.','.','.','.']
 ])
+// const game = new Game([
+//   ['r','n','b','q','k','b','n','r'],
+//   ['p','p','p','p','p','p','p','p'],
+//   ['.','.','.','.','.','.','.','.'],
+//   ['.','.','.','.','.','.','.','.'],
+//   ['.','.','.','.','.','.','.','.'],
+//   ['.','.','.','.','.','.','.','.'],
+//   ['P','P','P','P','P','P','P','P'],
+//   ['R','N','B','Q','K','B','N','R']
+// ])
 const board = document.querySelector('.board')
 
 let draggedPiece = undefined
