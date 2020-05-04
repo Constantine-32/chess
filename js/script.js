@@ -8,7 +8,10 @@ if (!String.prototype.includes) {
 
 // Clasess
 function Game(side) {
-  this.boardTemplate = [
+  this.randomInt = function(n) {
+    return Math.floor(Math.random() * n)
+  }
+  this.boardTemplateWhite = [
     ['r','n','b','q','k','b','n','r'],
     ['p','p','p','p','p','p','p','p'],
     ['.','.','.','.','.','.','.','.'],
@@ -18,10 +21,20 @@ function Game(side) {
     ['P','P','P','P','P','P','P','P'],
     ['R','N','B','Q','K','B','N','R']
   ]
-  this.sside = side
-  this.pturn = true
+  this.boardTemplateBlack  = [
+    ['R','N','B','Q','K','B','N','R'],
+    ['P','P','P','P','P','P','P','P'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['p','p','p','p','p','p','p','p'],
+    ['r','n','b','q','k','b','n','r']
+  ]
+  this.sside = side === 'random' ? ['white', 'black'][this.randomInt(2)] : side
+  this.pturn = this.sside === 'white'
   this.cturn = 'white'
-  this.board = this.boardTemplate
+  this.board = this.sside === 'white' ? this.boardTemplateWhite : this.boardTemplateBlack
   this.paren = document.querySelector('.board')
   this.htmlb = new Array(8)
   this.white = ['K', 'Q', 'B', 'B', 'N', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P']
@@ -34,6 +47,7 @@ function Game(side) {
   this.selmoves = undefined
 
   this.fillBoard = function() {
+    this.paren.innerHTML = ''
     const size = 90
     for (let y = 0; y < 8; y++) {
       this.htmlb[y] = new Array(8)
@@ -48,6 +62,7 @@ function Game(side) {
         this.htmlb[y][x] = piece
       }
     }
+    if (!this.pturn) setTimeout(function () { game.moveAI() }, 1000)
   }
 
   this.getClassColor = function(data) {
@@ -166,6 +181,7 @@ function Game(side) {
 
     const htmlp = this.gethtml(this.selected)
     this.place(this.remove(this.selected), move)
+    htmlp.style.transition = 'transform .3s'
     htmlp.style.transform = 'translate('+move.x*90+'px, '+move.y*90+'px)'
 
     this.switchPlayer()
@@ -193,7 +209,7 @@ function Game(side) {
   this.getPawnMoves = function() {
     const o = this.selected
     const moves = []
-    if (this.cturn === 'white') {
+    if (this.pturn) {
       let front = {x: o.x, y: o.y-1}
       if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
       let front2 = {x: o.x, y: o.y-2}
@@ -393,32 +409,17 @@ function Game(side) {
   this.place = function(piece, coord) {
     this.board[coord.y][coord.x] = piece[0]
     this.htmlb[coord.y][coord.x] = piece[1]
-    if (piece[0].toLowerCase() === 'p') {
-      if (this.getClassColor(piece[0]) === 'white' && coord.y === 0) {
-        this.board[coord.y][coord.x] = 'Q'
-        this.paren.removeChild(this.htmlb[coord.y][coord.x])
-        const queen = document.createElement('piece')
-        queen.classList.add(this.getClassColor(piece[0]))
-        queen.classList.add(this.getClassPiece('Q'))
-        translate(queen, {x: coord.x * 90, y: coord.y * 90})
-        this.paren.appendChild(queen)
-        this.htmlb[coord.y][coord.x] = queen
-      }
-      if (this.getClassColor(piece[0]) === 'black' && coord.y === 7) {
-        this.board[coord.y][coord.x] = 'q'
-        this.paren.removeChild(this.htmlb[coord.y][coord.x])
-        const queen = document.createElement('piece')
-        queen.classList.add(this.getClassColor(piece[0]))
-        queen.classList.add(this.getClassPiece('q'))
-        translate(queen, {x: coord.x * 90, y: coord.y * 90})
-        this.paren.appendChild(queen)
-        this.htmlb[coord.y][coord.x] = queen
-      }
+    if (piece[0].toLowerCase() === 'p' && (coord.y === 0 || coord.y === 7)) {
+      const code = this.getClassColor(piece[0]) === 'white' ? 'Q' : 'q'
+      this.board[coord.y][coord.x] = code
+      this.paren.removeChild(this.htmlb[coord.y][coord.x])
+      const queen = document.createElement('piece')
+      queen.classList.add(this.getClassColor(piece[0]))
+      queen.classList.add(this.getClassPiece(code))
+      translate(queen, {x: coord.x * 90, y: coord.y * 90})
+      this.paren.appendChild(queen)
+      this.htmlb[coord.y][coord.x] = queen
     }
-  }
-
-  this.randomInt = function(n) {
-    return Math.floor(Math.random() * n)
   }
 
   this.randomItem = function(array) {
