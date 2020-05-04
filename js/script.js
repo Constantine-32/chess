@@ -538,11 +538,12 @@ function addMove(move) {
 
 function menuSubmit(e) {
   e.preventDefault()
+  e.stopPropagation()
 
   name = inputName.value
   if (!(2 < name.length && name.length < 20)) return false
 
-  const side = e.submitter.id.split('-')[1]
+  const side = document.activeElement.id.split('-')[1]
   game = new Game(side)
   game.fillBoard()
   menu.classList.add('hidden')
