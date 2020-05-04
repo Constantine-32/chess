@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap')
+
+html
+  font-family: 'Roboto', sans-serif
+
 *
   margin: 0
   padding: 0
@@ -11,10 +16,77 @@ header
   justify-content: space-between
   height: 60px
   margin-bottom: 20px
-  background: rgb(46,42,36)
+  background: rgb(46, 42, 36)
   background: -moz-linear-gradient(top,  rgba(46,42,36,1) 0%, rgba(22,21,18,1) 100%)
   background: -webkit-linear-gradient(top,  rgba(46,42,36,1) 0%, rgba(22,21,18,1) 100%)
   background: linear-gradient(to bottom,  rgba(46,42,36,1) 0%, rgba(22,21,18,1) 100%)
+  border-bottom: 1px solid #262421
+
+.logo
+  height: 30px
+  padding: 15px 20px
+  img
+    height: 100%
+
+.menu
+  padding-bottom: 21px
+  color: #ccc
+  position: fixed
+  width: 420px
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  z-index: 100
+  background-color: #262421
+  border-radius: 5px
+  text-align: center
+  display: flex
+  flex-flow: column
+  h2
+    font-weight: normal
+    font-size: 30px
+    margin: 21px
+  .section
+    background: #302e2c
+    border-top: 1px solid #404040
+    border-bottom: 1px solid #404040
+    padding: 7px 14px
+    margin: 5px 0
+  input, label
+    font-family: 'Roboto', sans-serif
+    font-size: 15px
+  input
+    color: #fff
+    background: #24221e
+    border: 1px solid #404040
+    border-radius: 5px
+  input[type=text], input[type=date]
+    padding: 7px 14px
+    text-align: center
+    height: 15px
+    margin-left: 12px
+  button
+    height: 75px
+    width: 75px
+    background-size: cover
+    padding: 10px
+    background: linear-gradient(to bottom, #3c3934, #33312e 100%)
+    border: none
+    border-radius: 5px
+    margin: 7px
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,0.225)
+    i
+      display: block
+      background-size: 100%
+      width: 100%
+      height: 100%
+  button:hover
+    background: linear-gradient(to bottom, #44413b, #3b3935 100%)
+  button:focus
+    box-shadow: 0 0 12px #999
+  .side-random
+    height: 100px
+    width: 100px
 
 main
   display: flex
@@ -24,11 +96,16 @@ main
   height: 720px
   margin: 0 auto
 
+.blur
+  filter: brightness(40%) blur(3px)
+  pointer-events: none
+
 aside
   width: 350px
   height: 324px
   background-color: #262421
   overflow: hidden
+  border-radius: 5px
 
 .board
   position: relative
@@ -96,6 +173,14 @@ piece
     background: #3692e7
     color: #fff
 
+#side-black
+  background-image: url('../svg/king.black.svg')
+
+#side-random
+  background-image: url('../svg/king.random.svg')
+
+#side-white
+  background-image: url('../svg/king.white.svg')
 
 .black
   transition: transform .2s
