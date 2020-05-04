@@ -7,10 +7,21 @@ if (!String.prototype.includes) {
 }
 
 // Clasess
-function Game(board) {
+function Game(side) {
+  this.boardTemplate = [
+    ['r','n','b','q','k','b','n','r'],
+    ['p','p','p','p','p','p','p','p'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['.','.','.','.','.','.','.','.'],
+    ['P','P','P','P','P','P','P','P'],
+    ['R','N','B','Q','K','B','N','R']
+  ]
+  this.sside = side
   this.pturn = true
   this.cturn = 'white'
-  this.board = board
+  this.board = this.boardTemplate
   this.paren = document.querySelector('.board')
   this.htmlb = new Array(8)
   this.white = 'KQBBNNRRPPPPPPPP'
@@ -428,17 +439,14 @@ function Game(board) {
 }
 
 // Global variables
-const game = new Game([
-  ['r','n','b','q','k','b','n','r'],
-  ['p','p','p','p','p','p','p','p'],
-  ['.','.','.','.','.','.','.','.'],
-  ['.','.','.','.','.','.','.','.'],
-  ['.','.','.','.','.','.','.','.'],
-  ['.','.','.','.','.','.','.','.'],
-  ['P','P','P','P','P','P','P','P'],
-  ['R','N','B','Q','K','B','N','R']
-])
+const menu = document.querySelector('.menu')
+const inputName = document.querySelector('#input-name')
+const inputDate = document.querySelector('#input-date')
 const board = document.querySelector('.board')
+
+let game = undefined
+let name = undefined
+let date = undefined
 
 let draggedPiece = undefined
 let draggedPieceCoords = undefined
@@ -523,10 +531,24 @@ function addMove(move) {
   moves += .5
 }
 
+function menuSubmit(e) {
+  e.preventDefault()
+
+  name = inputName.value
+  if (!(2 < name.length && name.length < 20)) return false
+
+  const side = e.submitter.id.split('-')[1]
+  game = new Game(side)
+  game.fillBoard()
+  menu.classList.add('hidden')
+  document.querySelector('#content-wrap').classList.remove('blur')
+
+  date = inputDate.value
+  document.querySelector('.username').textContent = name
+}
+
 // Event Listeners
+menu.addEventListener('submit', menuSubmit)
 board.addEventListener('mousedown', mousedown)
 board.addEventListener('mousemove', mousemove)
 board.addEventListener('mouseup', mouseup)
-
-// Code
-game.fillBoard()

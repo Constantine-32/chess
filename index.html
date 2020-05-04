@@ -13,17 +13,17 @@
     <h2>Fill the information</h2>
     <div class="section">
       <label>Username</label>
-      <input type="text">
+      <input type="text" id="input-name" value="Guest" maxlength="20">
     </div>
     <div class="section">
       <label>Date of birth</label>
-      <input type="date" id="birth" value="2000-01-01" min="1910-01-01" max="2015-01-01">
+      <input type="date" id="input-date" value="2000-01-01" min="1910-01-01" max="2015-01-01">
     </div>
     <h2>Choose side</h2>
     <div>
-      <button type="submit"><i id="side-black"></i></button>
-      <button type="submit" class="side-random"><i id="side-random"></i></button>
-      <button type="submit"><i id="side-white"></i></button>
+      <button type="submit" id="side-black"><i></i></button>
+      <button type="submit" id="side-random" class="side-random"><i></i></button>
+      <button type="submit" id="side-white"><i></i></button>
     </div>
   </form>
 </div>
@@ -32,10 +32,14 @@
     <div class="logo">
       <img src="logo.png" alt="logo">
     </div>
-    <div class="profile"></div>
+    <div class="profile">
+      <span class="username"></span>
+    </div>
   </header>
   <main>
-    <aside></aside>
+    <aside class="game-history">
+      <div class="buttons">No games to show</div>
+    </aside>
     <div class="board"></div>
     <aside>
       <div class="buttons"></div>

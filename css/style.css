@@ -9,6 +9,7 @@ html {
 }
 
 body {
+  color: #ccc;
   background-color: #161512;
   user-select: none;
 }
@@ -25,12 +26,18 @@ header {
   border-bottom: 1px solid #262421;
 }
 
-.logo {
+.logo, .profile {
   height: 30px;
   padding: 15px 20px;
 }
-.logo img {
+.logo img, .profile img {
   height: 100%;
+}
+
+.username {
+  color: #fff;
+  font-family: "Roboto", sans-serif;
+  font-size: 26px;
 }
 
 .menu {
@@ -104,6 +111,19 @@ header {
   width: 100px;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
+.game-history .buttons {
+  text-align: center;
+}
+
+.blur {
+  filter: brightness(40%) blur(3px);
+  pointer-events: none;
+}
+
 main {
   display: flex;
   justify-content: space-between;
@@ -111,11 +131,6 @@ main {
   width: 1460px;
   height: 720px;
   margin: 0 auto;
-}
-
-.blur {
-  filter: brightness(40%) blur(3px);
-  pointer-events: none;
 }
 
 aside {
@@ -202,15 +217,15 @@ piece {
   color: #fff;
 }
 
-#side-black {
+#side-black i {
   background-image: url("../svg/king.black.svg");
 }
 
-#side-random {
+#side-random i {
   background-image: url("../svg/king.random.svg");
 }
 
-#side-white {
+#side-white i {
   background-image: url("../svg/king.white.svg");
 }
 

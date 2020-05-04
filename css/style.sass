@@ -8,6 +8,7 @@ html
   padding: 0
 
 body
+  color: #ccc
   background-color: #161512
   user-select: none
 
@@ -22,11 +23,16 @@ header
   background: linear-gradient(to bottom,  rgba(46,42,36,1) 0%, rgba(22,21,18,1) 100%)
   border-bottom: 1px solid #262421
 
-.logo
+.logo, .profile
   height: 30px
   padding: 15px 20px
   img
     height: 100%
+
+.username
+  color: #fff
+  font-family: 'Roboto', sans-serif
+  font-size: 26px
 
 .menu
   padding-bottom: 21px
@@ -88,6 +94,16 @@ header
     height: 100px
     width: 100px
 
+.hidden
+  visibility: hidden
+
+.game-history .buttons
+  text-align: center
+
+.blur
+  filter: brightness(40%) blur(3px)
+  pointer-events: none
+
 main
   display: flex
   justify-content: space-between
@@ -95,10 +111,6 @@ main
   width: 1460px
   height: 720px
   margin: 0 auto
-
-.blur
-  filter: brightness(40%) blur(3px)
-  pointer-events: none
 
 aside
   width: 350px
@@ -173,13 +185,13 @@ piece
     background: #3692e7
     color: #fff
 
-#side-black
+#side-black i
   background-image: url('../svg/king.black.svg')
 
-#side-random
+#side-random i
   background-image: url('../svg/king.random.svg')
 
-#side-white
+#side-white i
   background-image: url('../svg/king.white.svg')
 
 .black
