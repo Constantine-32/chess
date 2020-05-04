@@ -443,10 +443,6 @@ function getBoardCoords(e) {
   return {x: Math.floor(co.x / 90), y: Math.floor(co.y / 90)}
 }
 
-function getBoardToPixel(coord) {
-  return {x: coord.x * 90, y: coord.y * 90}
-}
-
 function mousedown(e) {
   if (game.selected) game.unselect()
   if (!game.select(getBoardCoords(e))) return
