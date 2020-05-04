@@ -24,8 +24,8 @@ function Game(side) {
   this.board = this.boardTemplate
   this.paren = document.querySelector('.board')
   this.htmlb = new Array(8)
-  this.white = 'KQBBNNRRPPPPPPPP'
-  this.black = 'kqbbnnrrpppppppp'
+  this.white = ['K', 'Q', 'B', 'B', 'N', 'N', 'R', 'R', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P']
+  this.black = ['k', 'q', 'b', 'b', 'n', 'n', 'r', 'r', 'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p']
   this.selel = []
 
   // stores the coords of the current selected piece
@@ -177,8 +177,12 @@ function Game(side) {
   }
 
   this.capture = function(coord) {
-    const piece = this.htmlb[coord.y][coord.x]
-    this.paren.removeChild(piece)
+    const htmlp = this.gethtml(coord)
+    this.paren.removeChild(htmlp)
+    const piece = this.get(coord)
+    const index = (this.cturn === 'white' ? this.black : this.white).indexOf(piece)
+    if (index > -1) (this.cturn === 'white' ? this.black : this.white).splice(index, 1)
+    if (piece.toLowerCase() === 'k') console.log('king death!')
   }
 
   this.switchPlayer = function() {
