@@ -11,9 +11,11 @@ function Game(board) {
   this.pturn = true
   this.cturn = 'white'
   this.board = board
+  this.paren = document.querySelector('.board')
   this.htmlb = new Array(8)
   this.white = 'KQBBNNRRPPPPPPPP'
   this.black = 'kqbbnnrrpppppppp'
+  this.selel = []
 
   // stores the coords of the current selected piece
   this.selected = undefined
@@ -21,7 +23,6 @@ function Game(board) {
   this.selmoves = undefined
 
   this.fillBoard = function() {
-    const htmlboard = document.querySelector('.board')
     const size = 90
     for (let y = 0; y < 8; y++) {
       this.htmlb[y] = new Array(8)
@@ -32,7 +33,7 @@ function Game(board) {
         piece.classList.add(this.getClassColor(data))
         piece.classList.add(this.getClassPiece(data))
         translate(piece, {x: x * size, y: y * size})
-        htmlboard.appendChild(piece)
+        this.paren.appendChild(piece)
         this.htmlb[y][x] = piece
       }
     }
@@ -52,11 +53,38 @@ function Game(board) {
     if (!this.pturn || !this.isAllyPiece(coord)) return false
     this.selected = coord
     this.selmoves = this.getSelmoves()
+
+    const seldiv = document.createElement('div')
+    seldiv.classList.add('selected')
+    this.translate(seldiv, coord)
+    this.selel.push(seldiv)
+    this.paren.appendChild(seldiv)
+
     if (!this.selmoves) {
-      this.selected = undefined
-      return false
+      this.selmoves = []
+      return true
     }
+
+    for (let i = 0; i < this.selmoves.length; i++) {
+      let dotdiv = document.createElement('div')
+      dotdiv.classList.add('movedots')
+      if (this.isEnemyPiece(this.selmoves[i])) dotdiv.classList.add('capture')
+      this.translate(dotdiv, this.selmoves[i])
+      this.selel.push(dotdiv)
+      this.paren.appendChild(dotdiv)
+    }
+
     return true
+  }
+
+  this.unselect = function() {
+    if (!this.selected) return false
+    this.selected = undefined
+    this.selmoves = undefined
+    for (let i = 0; i < this.selel.length; i++) {
+      this.paren.removeChild(this.selel[i])
+    }
+    this.selel = []
   }
 
   // returns array of valid moves for selected piece
@@ -81,10 +109,8 @@ function Game(board) {
 
     this.place(this.remove(this.selected), coord)
 
+    this.unselect()
     this.switchPlayer()
-
-    this.selected = undefined
-    this.selmoves = undefined
 
     return this.coordNotation(coord)
   }
@@ -141,7 +167,7 @@ function Game(board) {
 
   this.capture = function(coord) {
     const piece = this.htmlb[coord.y][coord.x]
-    document.querySelector('.board').removeChild(piece)
+    this.paren.removeChild(piece)
   }
 
   this.switchPlayer = function() {
@@ -372,6 +398,11 @@ function Game(board) {
     const piece = this.get(coord).toLowerCase()
     return {p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔'}[piece] + 'abcdefgh'[coord.x] + (coord.y+1)
   }
+
+  this.translate = function(element, coord) {
+    element.style.transform = 'translate(' + (coord.x * 90) + 'px, ' + (coord.y * 90) + 'px)'
+  }
+
 }
 
 // Global variables
@@ -391,6 +422,7 @@ let draggedPiece = undefined
 let draggedPieceCoords = undefined
 
 let moves = 1
+let alreadyselected = false
 
 // Functions
 function translate(piece, coord) {
@@ -416,7 +448,9 @@ function getBoardToPixel(coord) {
 }
 
 function mousedown(e) {
+  if (game.selected) game.unselect()
   if (!game.select(getBoardCoords(e))) return
+  if (alreadyselected) alreadyselected = false
   draggedPiece = e.target
   draggedPiece.style.zIndex = '4'
   draggedPieceCoords = getFlooredCoords(e)
@@ -439,8 +473,11 @@ function mouseup(e) {
     translate(draggedPiece, getFlooredCoords(e))
     addMove(move)
     document.title = 'Waiting for opponent'
+  } else {
+    if (alreadyselected) game.unselect()
+    else alreadyselected = true
+    translate(draggedPiece, draggedPieceCoords)
   }
-  else translate(draggedPiece, draggedPieceCoords)
   draggedPiece.style.zIndex = '2'
 
   draggedPiece = undefined
@@ -449,7 +486,7 @@ function mouseup(e) {
   if (move) setTimeout(function () {
     addMove(game.moveAI())
     document.title = 'Your turn'
-  }, 0)
+  }, 300)
 }
 
 function addMove(move) {
