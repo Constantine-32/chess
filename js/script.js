@@ -8,9 +8,11 @@ if (!String.prototype.includes) {
 
 // Clasess
 function Game(side) {
+  // returns a random integer between 0 and n-1
   this.randomInt = function(n) {
     return Math.floor(Math.random() * n)
   }
+
   this.boardTemplateWhite = [
     ['r','n','b','q','k','b','n','r'],
     ['p','p','p','p','p','p','p','p'],
@@ -31,6 +33,7 @@ function Game(side) {
     ['p','p','p','p','p','p','p','p'],
     ['r','n','b','q','k','b','n','r']
   ]
+  this.gamee = true
   this.sside = side === 'random' ? ['white', 'black'][this.randomInt(2)] : side
   this.pturn = this.sside === 'white'
   this.cturn = 'white'
@@ -46,7 +49,8 @@ function Game(side) {
   // stores the coords of the avaliable moves of the selected piece
   this.selmoves = undefined
 
-  this.fillBoard = function() {
+  // fills the html with the corresponding pieces
+  this.fillHtmlBoard = function() {
     this.paren.innerHTML = ''
     const size = 90
     for (let y = 0; y < 8; y++) {
@@ -76,7 +80,7 @@ function Game(side) {
 
   // selects a piece if its an ally piece with valid moves
   this.select = function(coord) {
-    if (!this.pturn || !this.isAllyPiece(coord)) return false
+    if (!this.gamee || !this.pturn || !this.isAllyPiece(coord)) return false
     this.selected = coord
     this.selmoves = this.getSelmoves()
 
@@ -138,7 +142,7 @@ function Game(side) {
 
   // moves selected piece to argument coords
   this.move = function(coord) {
-    if (!this.pturn || !this.selected || !this.inSelmoves(coord)) return false
+    if (!this.gamee || !this.pturn || !this.selected || !this.inSelmoves(coord)) return false
 
     if (this.isEnemyPiece(coord)) this.capture(coord)
 
@@ -152,7 +156,7 @@ function Game(side) {
 
   // the AI makes a move
   this.moveAI = function() {
-    if (this.pturn) return false
+    if (!this.gamee || this.pturn) return false
     // select a random piece that can move giving priority to the ones that can capture
     const pieces = []
     const capturepices = []
@@ -209,7 +213,10 @@ function Game(side) {
     const piece = this.get(coord)
     const index = (this.cturn === 'white' ? this.black : this.white).indexOf(piece)
     if (index > -1) (this.cturn === 'white' ? this.black : this.white).splice(index, 1)
-    if (piece.toLowerCase() === 'k') console.log('king death!')
+    if (piece.toLowerCase() === 'k') {
+      this.gamee = false
+      document.querySelector('#winner').textContent = this.cturn[0].toUpperCase() + this.cturn.substring(1) + ' wins!'
+    }
   }
 
   this.switchPlayer = function() {
@@ -463,6 +470,8 @@ function Game(side) {
     element.style.transform = 'translate(' + (coord.x * 90) + 'px, ' + (coord.y * 90) + 'px)'
   }
 
+  // calls the fill board at the end
+  this.fillHtmlBoard()
 }
 
 // Global variables
@@ -570,7 +579,6 @@ function menuSubmit(e) {
 
   const side = document.activeElement.id.split('-')[1]
   game = new Game(side)
-  game.fillBoard()
   menu.classList.add('hidden')
   document.querySelector('#content-wrap').classList.remove('blur')
 

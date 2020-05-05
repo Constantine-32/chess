@@ -192,6 +192,11 @@ piece.ghost {
 .buttons {
   height: 45px;
   background: #302e2c;
+  text-align: center;
+}
+
+.buttons h2 {
+  padding-top: 8px;
 }
 
 .moves {
