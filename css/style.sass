@@ -158,7 +158,7 @@ piece
   background: radial-gradient(transparent 0%, transparent 80%, rgba(20,85,0,0.3) 80%)
 
 .buttons
-  height: 32px
+  height: 45px
   background: #302e2c
 
 .moves
@@ -169,14 +169,15 @@ piece
   flex-flow: row wrap
   align-content: flex-start
   line-height: 26px
-  height: 260px
+  height: 234px
   overflow-y: scroll
-  width: 100%
-  padding-right: 17px
+  width: 367px
   .index
     width: 16%
     text-align: center
-    background: #302e2c
+    border-right: 1px solid #333
+    box-sizing: border-box
+    background: #383838
   .move
     width: 42%
     padding-left: 12px
@@ -185,6 +186,9 @@ piece
   .move:hover
     background: #3692e7
     color: #fff
+
+.moves .index:nth-child(even)
+  background: #302e2c
 
 #side-black i
   background-image: url('../svg/king.black.svg')
