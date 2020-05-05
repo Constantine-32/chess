@@ -1,6 +1,6 @@
 // Fixes for IE11
 if (!String.prototype.includes) {
-  String.prototype.includes = function() {
+  String.prototype.includes = function () {
     'use strict'
     return String.prototype.indexOf.apply(this, arguments) !== -1
   }
@@ -9,29 +9,29 @@ if (!String.prototype.includes) {
 // Clasess
 function Game(side) {
   // returns a random integer between 0 and n-1
-  this.randomInt = function(n) {
+  this.randomInt = function (n) {
     return Math.floor(Math.random() * n)
   }
 
   this.boardTemplateWhite = [
-    ['r','n','b','q','k','b','n','r'],
-    ['p','p','p','p','p','p','p','p'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['P','P','P','P','P','P','P','P'],
-    ['R','N','B','Q','K','B','N','R']
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
   ]
-  this.boardTemplateBlack  = [
-    ['R','N','B','Q','K','B','N','R'],
-    ['P','P','P','P','P','P','P','P'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['.','.','.','.','.','.','.','.'],
-    ['p','p','p','p','p','p','p','p'],
-    ['r','n','b','q','k','b','n','r']
+  this.boardTemplateBlack = [
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'],
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['.', '.', '.', '.', '.', '.', '.', '.'],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r']
   ]
   this.gamee = true
   this.sside = side === 'random' ? ['white', 'black'][this.randomInt(2)] : side
@@ -50,7 +50,7 @@ function Game(side) {
   this.selmoves = undefined
 
   // fills the html with the corresponding pieces
-  this.fillHtmlBoard = function() {
+  this.fillHtmlBoard = function () {
     this.paren.innerHTML = ''
     const size = 90
     for (let y = 0; y < 8; y++) {
@@ -66,20 +66,22 @@ function Game(side) {
         this.htmlb[y][x] = piece
       }
     }
-    if (!this.pturn) setTimeout(function () { addMove(game.moveAI()) }, 1000)
+    if (!this.pturn) setTimeout(function () {
+      addMove(game.moveAI())
+    }, 1000)
   }
 
-  this.getClassColor = function(data) {
+  this.getClassColor = function (data) {
     return 'A' <= data && data <= 'Z' ? 'white' : 'black'
   }
 
-  this.getClassPiece = function(data) {
+  this.getClassPiece = function (data) {
     data = data.toLowerCase()
     return {p: 'pawn', r: 'rook', n: 'knight', b: 'bishop', q: 'queen', k: 'king'}[data]
   }
 
   // selects a piece if its an ally piece with valid moves
-  this.select = function(coord) {
+  this.select = function (coord) {
     if (!this.gamee || !this.pturn || !this.isAllyPiece(coord)) return false
     this.selected = coord
     this.selmoves = this.getSelmoves()
@@ -116,7 +118,7 @@ function Game(side) {
     return true
   }
 
-  this.unselect = function() {
+  this.unselect = function () {
     if (!this.selected) return false
     this.selected = undefined
     this.selmoves = undefined
@@ -127,21 +129,28 @@ function Game(side) {
   }
 
   // returns array of valid moves for selected piece
-  this.getSelmoves = function() {
+  this.getSelmoves = function () {
     const piece = this.get(this.selected).toLowerCase()
     switch (piece) {
-      case 'p': return this.getPawnMoves()
-      case 'r': return this.getRookMoves()
-      case 'n': return this.getKnightMoves()
-      case 'b': return this.getBishopMoves()
-      case 'q': return this.getQueenMoves()
-      case 'k': return this.getKingMoves()
-      default: return undefined
+      case 'p':
+        return this.getPawnMoves()
+      case 'r':
+        return this.getRookMoves()
+      case 'n':
+        return this.getKnightMoves()
+      case 'b':
+        return this.getBishopMoves()
+      case 'q':
+        return this.getQueenMoves()
+      case 'k':
+        return this.getKingMoves()
+      default:
+        return undefined
     }
   }
 
   // moves selected piece to argument coords
-  this.move = function(coord) {
+  this.move = function (coord) {
     if (!this.gamee || !this.pturn || !this.selected || !this.inSelmoves(coord)) return false
 
     if (this.isEnemyPiece(coord)) this.capture(coord)
@@ -155,7 +164,7 @@ function Game(side) {
   }
 
   // the AI makes a move
-  this.moveAI = function() {
+  this.moveAI = function () {
     if (!this.gamee || this.pturn) return false
     // select a random piece that can move giving priority to the ones that can capture
     const pieces = []
@@ -197,7 +206,7 @@ function Game(side) {
     this.place(this.remove(this.selected), move)
     // visually move the html piece
     htmlp.style.transition = 'transform .3s'
-    htmlp.style.transform = 'translate('+move.x*90+'px, '+move.y*90+'px)'
+    htmlp.style.transform = 'translate(' + move.x * 90 + 'px, ' + move.y * 90 + 'px)'
 
     this.switchPlayer()
 
@@ -207,7 +216,7 @@ function Game(side) {
     return this.coordNotation(move)
   }
 
-  this.capture = function(coord) {
+  this.capture = function (coord) {
     const htmlp = this.gethtml(coord)
     this.paren.removeChild(htmlp)
     const piece = this.get(coord)
@@ -221,38 +230,38 @@ function Game(side) {
     }
   }
 
-  this.switchPlayer = function() {
+  this.switchPlayer = function () {
     this.cturn = this.cturn === 'white' ? 'black' : 'white'
     this.pturn = !this.pturn
   }
 
-  this.getPawnMoves = function() {
+  this.getPawnMoves = function () {
     const o = this.selected
     const moves = []
     if (this.pturn) {
-      let front = {x: o.x, y: o.y-1}
+      let front = {x: o.x, y: o.y - 1}
       if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
-      let front2 = {x: o.x, y: o.y-2}
+      let front2 = {x: o.x, y: o.y - 2}
       if (o.y === 6 && this.isValid(front2) && !this.isPiece(front) && !this.isPiece(front2)) moves.push(front2)
-      let frontl = {x: o.x-1, y: o.y-1}
+      let frontl = {x: o.x - 1, y: o.y - 1}
       if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
-      let frontr = {x: o.x+1, y: o.y-1}
+      let frontr = {x: o.x + 1, y: o.y - 1}
       if (this.isValid(frontr) && this.isEnemyPiece(frontr)) moves.push(frontr)
       return moves.length > 0 ? moves : undefined
     } else {
-      let front = {x: o.x, y: o.y+1}
+      let front = {x: o.x, y: o.y + 1}
       if (this.isValid(front) && !this.isPiece(front)) moves.push(front)
-      let front2 = {x: o.x, y: o.y+2}
+      let front2 = {x: o.x, y: o.y + 2}
       if (o.y === 1 && this.isValid(front2) && !this.isPiece(front) && !this.isPiece(front2)) moves.push(front2)
-      let frontl = {x: o.x-1, y: o.y+1}
+      let frontl = {x: o.x - 1, y: o.y + 1}
       if (this.isValid(frontl) && this.isEnemyPiece(frontl)) moves.push(frontl)
-      let frontr = {x: o.x+1, y: o.y+1}
+      let frontr = {x: o.x + 1, y: o.y + 1}
       if (this.isValid(frontr) && this.isEnemyPiece(frontr)) moves.push(frontr)
       return moves.length > 0 ? moves : undefined
     }
   }
 
-  this.getRookMoves = function() {
+  this.getRookMoves = function () {
     const o = this.selected
     const moves = []
     // North
@@ -298,7 +307,7 @@ function Game(side) {
     return moves.length > 0 ? moves : undefined
   }
 
-  this.getKnightMoves = function() {
+  this.getKnightMoves = function () {
     const o = this.selected
     const moves = []
     const offss = [[1, 2], [2, 1], [1, -2], [2, -1], [-1, 2], [-2, 1], [-1, -2], [-2, -1]]
@@ -311,7 +320,7 @@ function Game(side) {
     return moves.length > 0 ? moves : undefined
   }
 
-  this.getBishopMoves = function() {
+  this.getBishopMoves = function () {
     const o = this.selected
     const moves = []
     // North East
@@ -357,7 +366,7 @@ function Game(side) {
     return moves.length > 0 ? moves : undefined
   }
 
-  this.getQueenMoves = function() {
+  this.getQueenMoves = function () {
     let moves1 = this.getRookMoves()
     let moves2 = this.getBishopMoves()
     moves1 = moves1 ? moves1 : []
@@ -366,7 +375,7 @@ function Game(side) {
     return moves.length > 0 ? moves : undefined
   }
 
-  this.getKingMoves = function() {
+  this.getKingMoves = function () {
     const o = this.selected
     const moves = []
     let move
@@ -381,25 +390,25 @@ function Game(side) {
     return moves.length > 0 ? moves : undefined
   }
 
-  this.isPiece = function(coord) {
+  this.isPiece = function (coord) {
     return this.isAllyPiece(coord) || this.isEnemyPiece(coord)
   }
 
-  this.isAllyPiece = function(coord) {
-    return (this.cturn === 'white') ? this.white.includes(this.get(coord)) : this.black.includes(this.get(coord))
+  this.isAllyPiece = function (coord) {
+    return (this.cturn === 'white') ? this.white.join('').includes(this.get(coord)) : this.black.join('').includes(this.get(coord))
   }
 
-  this.isEnemyPiece = function(coord) {
-    return (this.cturn === 'white') ? this.black.includes(this.get(coord)) : this.white.includes(this.get(coord))
+  this.isEnemyPiece = function (coord) {
+    return (this.cturn === 'white') ? this.black.join('').includes(this.get(coord)) : this.white.join('').includes(this.get(coord))
   }
 
   // returns if a coord is within the board limits
-  this.isValid = function(coord) {
+  this.isValid = function (coord) {
     return 0 <= coord.x && coord.x < 8 && 0 <= coord.y && coord.y < 8
   }
 
   // check if argument coords is in selmoves array
-  this.inSelmoves = function(coord) {
+  this.inSelmoves = function (coord) {
     for (let i = 0; i < this.selmoves.length; i++) {
       let c = this.selmoves[i]
       if (coord.x === c.x && coord.y === c.y) return true
@@ -408,7 +417,7 @@ function Game(side) {
   }
 
   // returns the piece character of the given coords
-  this.get = function(coord) {
+  this.get = function (coord) {
     return this.board[coord.y][coord.x]
   }
 
@@ -417,7 +426,7 @@ function Game(side) {
   }
 
   // removes the piece from the given coords
-  this.remove = function(coord) {
+  this.remove = function (coord) {
     const piece = this.board[coord.y][coord.x]
     const htmlp = this.htmlb[coord.y][coord.x]
     this.board[coord.y][coord.x] = '.'
@@ -426,7 +435,7 @@ function Game(side) {
   }
 
   // places the given piece to the given coords in the board
-  this.place = function(piece, coord) {
+  this.place = function (piece, coord) {
     this.board[coord.y][coord.x] = piece[0]
     this.htmlb[coord.y][coord.x] = piece[1]
     // code for auto pawn coronation into queen
@@ -451,12 +460,12 @@ function Game(side) {
   }
 
   // returns a random item from the given array
-  this.randomItem = function(array) {
+  this.randomItem = function (array) {
     return array[this.randomInt(array.length)]
   }
 
   // returns if any of the moves of the given array is a move that captures an enemy piece
-  this.anyCapture = function(moves) {
+  this.anyCapture = function (moves) {
     for (let i = 0; i < moves.length; i++)
       if (this.isEnemyPiece(moves[i])) return true
     return false
@@ -465,10 +474,10 @@ function Game(side) {
   // returns the notation of the move from the given coords
   this.coordNotation = function (coord) {
     const piece = this.get(coord).toLowerCase()
-    return {p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔'}[piece] + 'abcdefgh'[coord.x] + (coord.y+1)
+    return {p: '♙', r: '♖', n: '♘', b: '♗', q: '♕', k: '♔'}[piece] + 'abcdefgh'[coord.x] + (coord.y + 1)
   }
 
-  this.translate = function(element, coord) {
+  this.translate = function (element, coord) {
     element.style.transform = 'translate(' + (coord.x * 90) + 'px, ' + (coord.y * 90) + 'px)'
   }
 
@@ -499,7 +508,7 @@ let alreadyselected = false
 
 // Functions
 function translate(piece, coord) {
-  piece.style.transform = 'translate('+coord.x+'px, '+coord.y+'px)'
+  piece.style.transform = 'translate(' + coord.x + 'px, ' + coord.y + 'px)'
 }
 
 function getRelativeCoords(e) {
