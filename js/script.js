@@ -576,7 +576,7 @@ function addMove(move) {
 function updateClock() {
   clockseconds++
   let seconds = clockseconds % 60
-  let minutes = (clockseconds - seconds) % 60
+  let minutes = (clockseconds - seconds) / 60
   clock.textContent = (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds)
 }
 
