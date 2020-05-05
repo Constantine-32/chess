@@ -86,6 +86,15 @@ function Game(side) {
     this.selel.push(seldiv)
     this.paren.appendChild(seldiv)
 
+    const piece = this.get(coord)
+    const ghost = document.createElement('piece')
+    ghost.classList.add(this.getClassColor(piece))
+    ghost.classList.add(this.getClassPiece(piece))
+    ghost.classList.add('ghost')
+    this.translate(ghost, coord)
+    this.selel.push(ghost)
+    this.paren.appendChild(ghost)
+
     if (!this.selmoves) {
       this.selmoves = []
       return true
