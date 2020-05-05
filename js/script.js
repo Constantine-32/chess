@@ -62,7 +62,7 @@ function Game(side) {
         this.htmlb[y][x] = piece
       }
     }
-    if (!this.pturn) setTimeout(function () { game.moveAI() }, 1000)
+    if (!this.pturn) setTimeout(function () { addMove(game.moveAI()) }, 1000)
   }
 
   this.getClassColor = function(data) {
