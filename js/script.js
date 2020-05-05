@@ -216,6 +216,7 @@ function Game(side) {
     if (piece.toLowerCase() === 'k') {
       this.gamee = false
       document.getElementById('winner').textContent = this.cturn[0].toUpperCase() + this.cturn.substring(1) + ' wins!'
+      rematch.classList.remove('hidden')
       clearInterval(clockid)
     }
   }
@@ -481,7 +482,9 @@ const inputName = document.querySelector('#input-name')
 const inputDate = document.querySelector('#input-date')
 const board = document.querySelector('.board')
 const clock = document.querySelector('.clock')
+const rematch = document.querySelector('#rematch')
 
+let side = undefined
 let game = undefined
 let name = undefined
 let date = undefined
@@ -590,7 +593,7 @@ function menuSubmit(e) {
   const age = Math.floor((new Date() - new Date(inputDate.value)) / 31536000000)
   name += ' (age ' + age + ' years)'
 
-  const side = document.activeElement.id.split('-')[1]
+  side = document.activeElement.id.split('-')[1]
   game = new Game(side)
   clockid = setInterval(updateClock, 1000)
   menu.classList.add('hidden')
@@ -600,8 +603,22 @@ function menuSubmit(e) {
   document.querySelector('.username').textContent = name
 }
 
+function newGame() {
+  side = side === 'white' ? 'black' : 'white'
+  game = new Game(side)
+  moves = 1
+  document.querySelector('.moves').innerHTML = ''
+  document.getElementById('winner').textContent = ''
+  clockseconds = 0
+  clearInterval(clockid)
+  clock.textContent = '00:00'
+  clockid = setInterval(updateClock, 1000)
+  rematch.classList.add('hidden')
+}
+
 // Event Listeners
 menu.addEventListener('submit', menuSubmit)
 board.addEventListener('mousedown', mousedown)
 board.addEventListener('mousemove', mousemove)
 board.addEventListener('mouseup', mouseup)
+rematch.addEventListener('click', newGame)
