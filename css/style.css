@@ -15,8 +15,6 @@ body {
 }
 
 header {
-  display: flex;
-  justify-content: space-between;
   height: 60px;
   margin-bottom: 20px;
   background: #2e2a24;
@@ -32,6 +30,14 @@ header {
 }
 .logo img, .profile img {
   height: 100%;
+}
+
+.logo {
+  float: left;
+}
+
+.profile {
+  float: right;
 }
 
 .username {
