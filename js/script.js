@@ -216,6 +216,7 @@ function Game(side) {
     if (piece.toLowerCase() === 'k') {
       this.gamee = false
       document.getElementById('winner').textContent = this.cturn[0].toUpperCase() + this.cturn.substring(1) + ' wins!'
+      clearInterval(clockid)
     }
   }
 
@@ -479,10 +480,13 @@ const menu = document.getElementsByClassName('menu')[0]
 const inputName = document.querySelector('#input-name')
 const inputDate = document.querySelector('#input-date')
 const board = document.querySelector('.board')
+const clock = document.querySelector('.clock')
 
 let game = undefined
 let name = undefined
 let date = undefined
+let clockid = undefined
+let clockseconds = 0
 
 let draggedPiece = undefined
 let draggedPieceCoords = undefined
@@ -552,6 +556,7 @@ function mouseup(e) {
 }
 
 function addMove(move) {
+  if (!move) return false
   const container = document.querySelector('.moves')
   if (moves % 1 === 0) {
     const index = document.createElement('div')
@@ -565,6 +570,14 @@ function addMove(move) {
   movediv.textContent = move
   container.appendChild(movediv)
   moves += .5
+  return true
+}
+
+function updateClock() {
+  clockseconds++
+  let seconds = clockseconds % 60
+  let minutes = (clockseconds - seconds) % 60
+  clock.textContent = (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds)
 }
 
 function menuSubmit(e) {
@@ -579,6 +592,7 @@ function menuSubmit(e) {
 
   const side = document.activeElement.id.split('-')[1]
   game = new Game(side)
+  clockid = setInterval(updateClock, 1000)
   menu.classList.add('hidden')
   document.querySelector('#content-wrap').classList.remove('blur')
 

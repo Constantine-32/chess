@@ -199,6 +199,12 @@ piece.ghost {
   padding-top: 8px;
 }
 
+.clock {
+  margin-top: 0.5em;
+  font-size: 3.5em;
+  letter-spacing: 0.12em;
+}
+
 .moves {
   font-family: monospace;
   font-size: 16px;
