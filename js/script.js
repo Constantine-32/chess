@@ -215,7 +215,7 @@ function Game(side) {
     if (index > -1) (this.cturn === 'white' ? this.black : this.white).splice(index, 1)
     if (piece.toLowerCase() === 'k') {
       this.gamee = false
-      document.querySelector('#winner').textContent = this.cturn[0].toUpperCase() + this.cturn.substring(1) + ' wins!'
+      document.getElementById('winner').textContent = this.cturn[0].toUpperCase() + this.cturn.substring(1) + ' wins!'
     }
   }
 
@@ -475,7 +475,7 @@ function Game(side) {
 }
 
 // Global variables
-const menu = document.querySelector('.menu')
+const menu = document.getElementsByClassName('menu')[0]
 const inputName = document.querySelector('#input-name')
 const inputDate = document.querySelector('#input-date')
 const board = document.querySelector('.board')
